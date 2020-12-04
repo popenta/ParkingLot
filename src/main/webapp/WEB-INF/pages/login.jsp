@@ -6,6 +6,12 @@
 
 <t:pageTemplate pageTitle="Login">
     
+    <c:if test="${message != null}">
+          <div class="alert alert-warning" role="alert">
+            ${message}
+          </div>
+    </c:if>
+    
     <form class="form-signin" method="POST" action="j_security_check">
         <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
         <label for="username" class="sr-only">Username</label>
