@@ -27,7 +27,7 @@ public class Photo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    
+  
     private String filename;
     private String fileType;
     private byte[] fileContent;
@@ -35,10 +35,6 @@ public class Photo implements Serializable {
     @OneToOne
     @JoinColumn(name = "CAR_KEY")
     private Car car;
-
-    public Photo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     public String getFilename() {
         return filename;
@@ -99,7 +95,11 @@ public class Photo implements Serializable {
     }
 
     public void setCar(Car car) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.car = car;
+    }
+
+    public Car getCar() {
+        return car;
     }
     
 }

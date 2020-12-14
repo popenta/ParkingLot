@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alex
  */
-@WebServlet(name = "Photos", urlPatterns = {"/Cars/Photos"})
+@WebServlet(name = "Photo", urlPatterns = {"/Cars/Photos"})
 public class Photos extends HttpServlet {
 
     @Inject
@@ -87,7 +87,7 @@ public class Photos extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {        
+            throws ServletException, IOException {
     }
 
     /**
