@@ -5,6 +5,8 @@
     <jta-data-source>jdbc/sample</jta-data-source>
     <class>com.mycompany.parkinglot.entity.User</class>
     <class>com.mycompany.parkinglot.entity.Car</class>
+    <class>com.mycompany.parkinglot.entity.Photo</class>
+    <class>com.park.parkinglot.entity.Photo</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/ParkingLot"/>
       <property name="javax.persistence.jdbc.user" value="ParkingLotUser"/>

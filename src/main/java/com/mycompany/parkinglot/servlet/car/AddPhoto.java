@@ -3,39 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.parkinglot.servlet.user;
+package com.mycompany.parkinglot.servlet.car;
 
-import com.mycompany.parkinglot.common.UserDetails;
-import com.mycompany.parkinglot.ejb.InvoiceBean;
-import com.mycompany.parkinglot.ejb.UserBean;
+import com.mycompany.parkinglot.common.CarDetails;
+import com.mycompany.parkinglot.ejb.CarBean;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.HttpConstraint;
-import javax.servlet.annotation.ServletSecurity;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author Alex
  */
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"AdminRole", "ClientRole"}))
-@WebServlet(name = "Users", urlPatterns = {"/Users"})
-public class Users extends HttpServlet {
-    @Inject
-    private UserBean userBean;
+@MultipartConfig
+@WebServlet(name = "AddPhoto", urlPatterns = {"/Cars/AddPhoto"})
+public class AddPhoto extends HttpServlet {
     
     @Inject
-    InvoiceBean invoiceBean;
-
+    CarBean carBean;
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -45,6 +38,22 @@ public class Users extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet AddPhoto</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet AddPhoto at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -58,17 +67,11 @@ public class Users extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("activePage", "Users");
-  
-        List<UserDetails> users = userBean.getAllUsers();
-        request.setAttribute("users", users);
+        Integer carId = Integer.parseInt(request.getParameter("id"));
+        CarDetails car = carBean.findById(carId);
+        request.setAttribute("car", car);
         
-        if(!invoiceBean.getUserIds().isEmpty()){
-            Collection<String> usernames = userBean.findUsernames(invoiceBean.getUserIds());
-            request.setAttribute("invoices", usernames);
-        }
-        
-        request.getRequestDispatcher("/WEB-INF/pages/users.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/pages/addPhoto.jsp").forward(request, response);
     }
 
     /**
@@ -82,18 +85,18 @@ public class Users extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String carIdAsString = request.getParameter("car_id");
+        Integer carId = Integer.parseInt(carIdAsString);
         
-            String[] userIdsAsString = request.getParameterValues("user_ids");
-            if(userIdsAsString != null){
-                Set <Integer> userIds = new HashSet<Integer>();
-                for(String userIdAsString : userIdsAsString){
-                    userIds.add(Integer.parseInt(userIdAsString));
-                }
-                
-                invoiceBean.getUserIds().addAll(userIds);
-            }
-            
-            response.sendRedirect(request.getContextPath() + "/Users");
+        Part filePart = request.getPart("file");
+        String fileName = filePart.getSubmittedFileName();
+        String fileType = filePart.getContentType();
+        long fileSize = filePart.getSize();
+        byte[] fileContent = new byte[(int) fileSize];
+        filePart.getInputStream().read(fileContent);
+        
+        carBean.addPhotoToCar(carId, fileName, fileType, fileContent);
+        response.sendRedirect(request.getContextPath() + "/Cars");
     }
 
     /**
@@ -103,7 +106,7 @@ public class Users extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Users v1.0";
+        return "Short description";
     }// </editor-fold>
 
 }

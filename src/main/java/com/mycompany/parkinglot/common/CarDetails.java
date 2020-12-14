@@ -40,7 +40,5 @@ public class CarDetails implements Serializable{
     public String getUsername() {
         return username;
     }
-
-    
     
 }
